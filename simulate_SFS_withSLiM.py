@@ -29,6 +29,9 @@ def runSlim(simulation, mu, rec, popSize, seqLen, ns, sampleSize, model, outdir,
     # Path to SLiM
     slim = "/usr/local/bin/slim"
     models = "/Users/tur92196/WorkDir/prfratio/slim/models"
+    
+    slim = "/usr/bin/slim"
+    models = "/mnt/d/genemod/better_dNdS_models/popgen/prfratio/slim/models"
 
     # # Model dictionary
     # avail_models = {"constant": "Constant size model",
