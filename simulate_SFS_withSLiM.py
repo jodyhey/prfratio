@@ -27,8 +27,8 @@ def readSFS(file):
 # Function to run SLiM as a external process
 def runSlim(simulation, mu, rec, popSize, seqLen, ns, sampleSize, model, outdir, cleandir = True):
     # Path to SLiM
-    slim = "/usr/local/bin/slim"
-    models = "/Users/tur92196/WorkDir/prfratio/slim/models"
+    # slim = "/usr/local/bin/slim"
+    # models = "/Users/tur92196/WorkDir/prfratio/slim/models"
     
     slim = "/usr/bin/slim"
     models = "/mnt/d/genemod/better_dNdS_models/popgen/prfratio/slim/models"
@@ -57,8 +57,8 @@ def runSlim(simulation, mu, rec, popSize, seqLen, ns, sampleSize, model, outdir,
                           "-d", ("outDir="+"'"+outdir+"'"), 
                           #("models/" + model + ".slim") # original
                           (models + "/" + model + ".slim")
-                          ], capture_output=True)
-    
+                           ], capture_output=True)
+    print(run.stderr)
     neutralsfsfile = (outdir + "/" + ("sfs_neutral_" + str(simulation) + "_" + seed + ".txt"))
     selectedsfsfile = (outdir + "/" + ("sfs_selected_" + str(simulation) + "_" + seed + ".txt"))
 
@@ -213,6 +213,7 @@ def main(argv):
     # Check if specified SLiM model exists!
     # Model dictionary
     avail_models = {"constant": "Constant size model",
+                    "constant_lognormal": "fixed constant for lognormal",
                     "iexpansion": "Instantaeous expansion model",
                     "ibottleneck": "Instantaneous bottleneck model",
                     "popstructure": "Constant size, population structure model",
@@ -306,7 +307,7 @@ def main(argv):
                 list_nss.append(ns)
             else:
                 list_nss.append(ns)
-            
+            # print(j)
             seed, neutral_sfs, selected_sfs = runSlim(simulation=simulation,mu=mu,rec=rec,popSize=popSize,seqLen=seqLen,ns=ns,sampleSize=sampleSize,model=model,outdir=path,cleandir=False) 
             
             list_neutral_sfss.append(neutral_sfs)
@@ -378,7 +379,7 @@ def main(argv):
                     list_nss.append(ns)
                 else:
                     list_nss.append(ns)
-                
+                # print(j)
                 seed, neutral_sfs, selected_sfs = runSlim(simulation=simulation,mu=mu,rec=rec,popSize=popSize,seqLen=seqLen,ns=ns,sampleSize=sampleSize,model=model,outdir=path,cleandir=True) 
                 
                 list_neutral_sfss.append(neutral_sfs)
