@@ -24,7 +24,7 @@ initialize() {
 	//defineGlobal("n", 40);
 	//defineGlobal("outDir", "/Users/tur92196/Desktop");	
 	
-	// PARAMETERS FOR THE 2NS (NOT IN USE HERE)
+	// PARAMETERS FOR THE 2NS (NOT IN USE IN THE FIXED 2NS MODEL)
 	//defineGlobal("param1", 0.0);
 	//defineGlobal("param2", 0.0);
 	
@@ -100,14 +100,14 @@ initialize() {
 s0 999999 late(){
 	m1fsfs = fsfs(p0, m1, n, F);
 	m2fsfs = fsfs(p0, m2, n, F);
-	print(m1fsfs);
-	print("\n");
-	print(m2fsfs);
-	print("\n");
+	//print(m1fsfs);
+	//print("\n");
+	//print(m2fsfs);
+	//print("\n");
 	
 	// Save FSFSs to a file:
 	writeSFS(m1fsfs, paste0("sfs_neutral_" + basename), outDir);
-	writeSFS(m2fsfs, paste0("sfs_selected_" + basename), outDir);
+   writeSFS(m2fsfs, paste0("sfs_selected_" + basename), outDir);
 	
 	sim.simulationFinished();
 }
