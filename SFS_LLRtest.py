@@ -56,23 +56,24 @@ if dobasicPRF: # regular PRF LLR stuff
     plt.plot(thetagcumobsv,cprob)
     plt.plot(x, chi2.cdf(x, df=1))
     plt.savefig(figfn)
-    plt.show()
+    # plt.show()
     plt.clf()
 
 
 
 
 if doratioPRF: #check chi^2 approximation of LLR for ratio of PRF, uses a single theta
-    SFS_functions.SSFconstant_dokuethe = False # see SFS_functions
     figfn = "chisq_check_RATIO_thetaN{}_thetaS{}_g{}_n{}_{}.pdf".format(theta,theta,g,n,foldstring)
     ratiothetacumobsv = []
     numnegdeltas = 0
     for i in range(ntrials):
-        nsfsfolded,ssfsfolded,ratios = SFS_functions.simsfsratio(theta,theta,1.0,n,None,dofolded,None,g,False)
+        nsfsfolded,ssfsfolded,ratios = SFS_functions.simsfsratio(theta,theta,1.0,n,None,dofolded,"single2Ns",[g],None,False,None)
         thetastart = 100.0
         gstart = -1.0
-        ratiothetagresult =  minimize(SFS_functions.NegL_SFSRATIO_Theta_Ns,np.array([thetastart,gstart]),args=(n,dofolded,ratios,False),method="Powell",bounds=[(thetastart/10,thetastart*10),(10*gstart,-10*gstart)])
-        ratiothetag0result =  minimize_scalar(SFS_functions.NegL_SFSRATIO_Theta_Ns,bracket=(thetastart/10,thetastart*10),args = (n,dofolded,ratios,True),method='Brent')        
+        ratiothetagresult =  minimize(SFS_functions.NegL_SFSRATIO_estimate_thetaS_thetaN,
+            np.array([thetastart,gstart]),args=(n,dofolded,"single2Ns",True,None,False,False,ratios),method="Powell",bounds=[(thetastart/10,thetastart*10),(10*gstart,-10*gstart)])
+        ratiothetag0result = minimize_scalar(SFS_functions.NegL_SFSRATIO_estimate_thetaS_thetaN,
+            bracket=(thetastart/10,thetastart*10),args = (n,dofolded,"fix2Ns0",True,None,False,False,ratios),method='Brent')   
         thetagdelta = -ratiothetagresult.fun + ratiothetag0result.fun
         if thetagdelta < 0:
             thetagdelta = 0.0
@@ -86,5 +87,5 @@ if doratioPRF: #check chi^2 approximation of LLR for ratio of PRF, uses a single
     plt.plot(x, chi2.cdf(x, df=1))
     plt.savefig(figfn)
     # print(numnegdeltas)
-    plt.show()
+    # plt.show()
     

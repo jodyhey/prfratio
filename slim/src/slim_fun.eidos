@@ -44,14 +44,14 @@ function (*)fsfs(o<Subpopulation>$ subpop, o<MutationType>$ mutType, i$ sampleSi
 	// if output invariants, return the full folded-sfs, 
 	// if not, remove the invariant bin
 	if (outInvariants)
-	   return fsfs[0:(size(fsfs)-2)];
+	   return fsfs[0:(size(fsfs)-1)];
 	else
-	   return fsfs[1:(size(fsfs)-2)];
+	   return fsfs[1:(size(fsfs)-1)];
 }
 
 function (void)writeSFS(i sfs, s$ basename, s$ path)
 {
-    writeFile(filePath=paste0(path + "/" + basename + ".txt"), contents = paste(sfs), append=F);
+    writeFile(filePath=paste0(path + "/" + basename + ".txt"), contents = paste(sfs), append=T);
 } 
 
 

@@ -27,8 +27,8 @@ np.random.seed(1)
 dobasicPRF = True
 doratioPRF = True
 n=40
-theta = 100
-dofolded = False
+theta = 1000
+dofolded = True # False
 foldstring = "folded" if dofolded else "unfolded"
 gvals = [5,2.5,2,1.5,1,0.5,0.2,0.1,0.05,0.0,-0.05,-0.1,-0.2,-0.5,-1,-1.5,-2,-2.5,-5]
 gvals.reverse()
@@ -40,9 +40,9 @@ if dobasicPRF:
     for gj,g in enumerate(gvals):
         for i in range(ntrialsperg):
             sfs,sfsfolded = SFS_functions.simsfs(theta,g,n,None, False)
-            thetastart = 100.0
+            thetastart = theta #100.0
             gstart = -1.0
-            thetagresult = minimize(SFS_functions.NegL_SFS_Theta_Ns,np.array([thetastart,gstart]),args=(n,dofolded,sfsfolded),method="Powell",bounds=[(thetastart/10,thetastart*10),(10*gstart,-10*gstart)])
+            thetagresult = minimize(SFS_functions.NegL_SFS_Theta_Ns,np.array([thetastart,gstart]),args=(n,dofolded,sfsfolded),method="Nelder-Mead",bounds=[(thetastart/10,thetastart*10),(10*gstart,-10*gstart)])
             g0result = minimize_scalar(SFS_functions.NegL_SFS_Theta_Ns,bracket=(thetastart/10,thetastart*10),args = (n,dofolded,sfsfolded),method='Brent')
             thetagdelta = 2*(-thetagresult.fun + g0result.fun)
             for ti,t in enumerate(x2thresholds):
@@ -60,6 +60,7 @@ if dobasicPRF:
     plt.ylabel("Probability of rejecting Null")
     plt.legend(title='p')
     plt.savefig(plotfilename)
+    plt.clf()
     # plt.show()
 if doratioPRF:
     plotfilename = 'ratioPRF_power_theta{}_n{}_{}.pdf'.format(theta,n,foldstring)
@@ -67,11 +68,13 @@ if doratioPRF:
     results = [[0]*len(pvalues) for i in range(len(gvals))] #results[i][j] has the count of significant results for gval[i] and pval[j]
     for gj,g in enumerate(gvals):
         for i in range(ntrialsperg):
-            nsfsfolded,ssfsfolded,ratios = SFS_functions.simsfsratio(theta,theta,1.0,n, None, dofolded, None,g, False)
-            thetastart = 100.0
+            nsfsfolded,ssfsfolded,ratios = SFS_functions.simsfsratio(theta,theta,1.0,n, None, dofolded, "single2Ns",[g],None, False,None)
+            thetastart = theta #100.0
             gstart = -1.0
-            ratiothetagresult =  minimize(SFS_functions.NegL_SFSRATIO_Theta_Ns,np.array([thetastart,gstart]),args=(n,dofolded,ratios,False),method="Powell",bounds=[(thetastart/10,thetastart*10),(10*gstart,-10*gstart)])
-            ratiothetag0result =  minimize_scalar(SFS_functions.NegL_SFSRATIO_Theta_Ns,bracket=(thetastart/10,thetastart*10),args = (n,dofolded,ratios,True),method='Brent')        
+            ratiothetagresult =  minimize(SFS_functions.NegL_SFSRATIO_estimate_thetaS_thetaN,
+                np.array([thetastart,gstart]),args=(n,dofolded,"single2Ns",True,None,False,False,ratios),method="Nelder-Mead",bounds=[(thetastart/10,thetastart*10),(10*gstart,-10*gstart)])
+            ratiothetag0result = minimize_scalar(SFS_functions.NegL_SFSRATIO_estimate_thetaS_thetaN,
+                bracket=(thetastart/10,thetastart*10),args = (n,dofolded,"fix2Ns0",True,None,False,False,ratios),method='Brent')        
             thetagdelta = 2*(-ratiothetagresult.fun + ratiothetag0result.fun)
             for ti,t in enumerate(x2thresholds):
                 if thetagdelta > t:
